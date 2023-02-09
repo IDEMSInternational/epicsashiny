@@ -90,9 +90,26 @@ get_data_from_rapidpro_api <- function(call_type, rapidpro_site = get_rapidpro_s
   return(user_result)
 }
 
+httr_get_call <- function(get_command, token = get_rapidpro_key()){
+  if (is.null(token)){
+    stop("token is NULL. Set token with `set_rapidpro_key`.")
+    # could there be a case where the key isn't needed?
+  }
+  if (is.null(get_command)){
+    stop("get_command is NULL. Expecting a website.")
+  }
+  response <- httr::GET(get_command, config = httr::add_headers(Authorization = paste("Token", token)))
+  raw <- httr::content(response, as = "text")
+  results <- jsonlite::fromJSON(raw)
+  if(!is.null(results$'next')){
+    dplyr::bind_rows(results$results, httr_get_call(results$'next', token))
+  } else {
+    return(results$results)
+  }
+}
+
 
 # New Functions for Climatic ShinyBot -----------------------------------------------------
-
 substrRight <- function(x, n){
   substr(x, nchar(x)-n+1, nchar(x))
 }
@@ -125,7 +142,7 @@ element_data <- function(element_col = user_data$fields$rainfall_measurements,
                          element_name = "Rain"){
   element_measure <- element_col
   element_split <- stringr::str_split(element_measure, pattern = stringr::fixed("|"))
-  names(element_split) <- user_data$fields$station_name
+  names(element_split) <- paste(user_data$fields$station_name, user_data$name, sep = "_")
   for (i in 1:length(element_split)){
     x <- element_split[[i]]
     # which elements have "edited" in them?
@@ -135,14 +152,18 @@ element_data <- function(element_col = user_data$fields$rainfall_measurements,
     element_split[[i]] <- data.frame(stringr::str_split(x, pattern = stringr::fixed(","), simplify = TRUE))
   }
   element_data <- plyr::ldply(element_split, `.id` = "Station") %>%
-    mutate(Type = element_name) %>%
-    relocate(Type, .after = Station)
+    mutate(Type = element_name) %>% relocate(Type, .after = Station)   
+  # split station into two columns: Station and User
+  station_user = data.frame(stringr::str_split(element_data$Station, pattern = "_", simplify = TRUE))
+  names(station_user) = c("Station", "User")
+  element_data <- element_data %>% dplyr::select(-c(Station)) 
+  element_data <- cbind(station_user, element_data)
   # remove columns and rows that contain all NAs
   element_data <- element_data %>% 
     dplyr::select(where(function(x) any(!is.na(x)))) %>%
     filter(rowSums(is.na(element_data)) != (length(element_data)-1)) # minus 1 because all have the type column
-  if (length(element_data) == 5){
-    names(element_data)[3:5] <- c("Entry Time", "Measurement", "Confirmed")
+  if (length(element_data) == 6){
+    names(element_data)[4:6] <- c("Entry Time", "Measurement", "Confirmed")
     element_data$`Entry Time` <- gsub("\\..*","", element_data$`Entry Time`)
     element_data <- element_data %>% filter(Confirmed != "D") # TODO: should do this earlier in the code
   }
@@ -156,5 +177,3 @@ raw_data <- function(rapidpro_site = get_rapidpro_site(), token = get_rapidpro_k
   raw <- httr::content(response, as = "text")
   return(raw)
 }
-
-
