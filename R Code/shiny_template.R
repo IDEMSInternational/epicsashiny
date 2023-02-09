@@ -14,7 +14,7 @@ climatic_shiny <- function(){
               selectInput("dataset", "Choose a dataset:",
                           choices = c("Station Metadata",  "Rainfall Data",
                                       "Tmin Data", "Tmax Data", "All Elements",
-                                      "chiarastation", "Zanzibar")),
+                                      "Test rain", "Test temperature", "Test rain temp")),
               # Button
               downloadButton("downloadData", "Download")),
           box(width = 6,
@@ -47,6 +47,7 @@ climatic_shiny <- function(){
     for (i in unique(nest_df$Station)){
       nest_df_i[[i]] <- data.frame(nest_df$data[nest_df$Station==i])
     }
+    names(nest_df_i) <- unique(nest_df$Station)
     
     # Reactive value for selected dataset ----
     datasetInput <- reactive({
@@ -56,8 +57,9 @@ climatic_shiny <- function(){
              "Tmin Data" = tmin_df,
              "Tmax Data" = tmax_df,
              "All Elements" = all_elements_df,
-             "chiarastation" = nest_df_i[[1]],
-             "Zanzibar" = nest_df_i[[2]])
+             "Test rain" = nest_df_i$`Test rain`,
+             "Test temperature" = nest_df_i$`Test temperature`,
+             "Test rain temp" = nest_df_i$`Test rain temp`)
     })
     
     # Table of selected dataset ----
@@ -86,4 +88,3 @@ climatic_shiny <- function(){
   
   shiny::shinyApp(ui = ui, server = server)
 }
-
