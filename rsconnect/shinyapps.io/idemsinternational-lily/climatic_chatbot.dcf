@@ -5,9 +5,9 @@ account: idemsinternational-lily
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8044985
-bundleId: 6827646
+bundleId: 6827653
 url: https://parentapp.shinyapps.io/climatic_chatbot/
-when: 1675947088.59052
-lastSyncTime: 1675947088.59053
+when: 1675947270.80765
+lastSyncTime: 1675947270.80767
 asMultiple: FALSE
 asStatic: FALSE
