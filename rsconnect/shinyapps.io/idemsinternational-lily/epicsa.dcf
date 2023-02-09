@@ -1,0 +1,13 @@
+name: epicsa
+title: epicsa
+username:
+account: idemsinternational-lily
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8266469
+bundleId: 6827683
+url: https://parentapp.shinyapps.io/epicsa/
+when: 1675948188.30536
+lastSyncTime: 1675948188.30539
+asMultiple: FALSE
+asStatic: FALSE
