@@ -6,6 +6,8 @@ user_data <- get_data_from_rapidpro_api(call_type = "contacts.json",
                                         date_from = NULL,
                                         date_to = NULL)
 
+# todo: add in column for "name" - call it "user"
+
 update_data <- function(){
   # Create the various data sets
   # station metadata data
@@ -37,4 +39,3 @@ update_data <- function(){
 # # for that station
 # vars_to_check <- grep("edited,", x)
 # edit_correction(x, vars_to_check)
-
