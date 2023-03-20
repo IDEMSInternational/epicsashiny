@@ -1,6 +1,6 @@
 library(rapidpror)
 
-set_rapidpro_key("f6a2ce1ada103b40190fc5930fd430b28be62370")
+set_rapidpro_key(key[[1]])
 set_rapidpro_site("https://rapidpro-next.idems.international/api/v2/")
 user_data <- get_data_from_rapidpro_api(call_type = "contacts.json",
                                         date_from = NULL,
