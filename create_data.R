@@ -1,5 +1,5 @@
 library(rapidpror)
-
+key <- read.table("R Code/config/key.txt")
 set_rapidpro_key(key[[1]])
 set_rapidpro_site("https://rapidpro-next.idems.international/api/v2/")
 user_data <- get_data_from_rapidpro_api(call_type = "contacts.json",

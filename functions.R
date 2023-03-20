@@ -142,7 +142,7 @@ element_data <- function(element_col = user_data$fields$rainfall_measurements,
                          element_name = "Rain"){
   element_measure <- element_col
   element_split <- stringr::str_split(element_measure, pattern = stringr::fixed("|"))
-  names(element_split) <- paste(user_data$fields$station_name, user_data$name, sep = "_")
+  names(element_split) <- paste(user_data$fields$station_name, user_data$uuid, sep = "_")
   for (i in 1:length(element_split)){
     x <- element_split[[i]]
     # which elements have "edited" in them?
